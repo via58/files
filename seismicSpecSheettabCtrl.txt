@@ -1,0 +1,113 @@
+angular.module('TGSApp').controller('seismicSpecSheettabCtrl', function ($scope, $rootScope, $http, SurveyService, common) {
+    $scope.currentPage = 0;
+    $scope.pageSize = 20;
+    $scope.sercnt = 0;
+    $scope.searchspecsheettext = "";
+
+    $rootScope.seismicSpecSheettab = function () {
+
+        $scope.sercnt += 1;
+        if ($scope.sercnt == 1) {
+            angular.element(document.body).append('<div id="overlay"><div class="spinner"></div></div>');
+
+            var geoSpatialFilter = "";
+            if (window.drawPolygon)
+                geoSpatialFilter = common.getGeoSpatialFilter(SurveyService.allSurveyFilter);
+
+            var selectedSpecFields = common.getSpecSheetSelectedFields();
+            var uuid = common.getUuid();
+            var surveyEntitlementUrl = common.getSurveyEntitlementUrl();
+            var searchspecsheetUrl = common.getSpecpdfFilterUrl($scope.searchspecsheettext);
+
+            var seismicSpecSheettaburl = "getDetailInfo?module=Seismic&tabName=SpecSheet";
+            $scope.Specsheetitems = [];
+            $http.get(SurveyService.urlValue + seismicSpecSheettaburl + SurveyService.allSurveyFilter + geoSpatialFilter + SurveyService.surveyQueryBuilder + selectedSpecFields + uuid + surveyEntitlementUrl + searchspecsheetUrl).
+                then(function (response) {
+                    console.log('specsheet items');
+                    console.log(response.data);
+                    if (response.data.content != null) {
+                        //$scope.Specsheetitems = response.data.content;
+                        $scope.Specsheetcount = response.data.totalElements;
+                        for (var i = 0; i < response.data.content.length; i++) {
+                            //console.log(response.data.content[i].parentValue + "  " + response.data.content[i].list);
+                            $scope.Specsheetitems.push({ fileName: response.data.content[i].parentValue, data: response.data.content[i].list });
+                        }
+
+                        if (response.data.totalElements < 10000) {
+                            $scope.SpecsheetPagesCount = response.data.totalElements;
+                        }
+                        else {
+                            $scope.SpecsheetPagesCount = 10000;
+                        }
+                    }
+                    else {
+                        $scope.Specsheetitems = [];
+                        $scope.SpecsheetPagesCount = response.data.totalElements;
+                    }
+                    $scope.sercnt = 0;
+                    $scope.currentPage = 0;
+                    setTimeout(function () {
+                        $rootScope.retainFields();
+                        angular.element(document.body).find('#overlay').remove();
+                    }, 1500);
+                }).catch(function (response) {
+                    $scope.sercnt = 0;
+                    angular.element(document.body).find('#overlay').remove();
+                    console.error('Error', response.status, response.data);
+                });
+        }
+
+    }
+
+
+    $rootScope.Specsheetpager = function (custommsg, page, pageSize, total) {
+
+        var geoSpatialFilter = "";
+        if (window.drawPolygon)
+            geoSpatialFilter = common.getGeoSpatialFilter(SurveyService.allSurveyFilter);
+
+        var selectedSpecFields = common.getSpecSheetSelectedFields();
+        var uuid = common.getUuid();
+        var surveyEntitlementUrl = common.getSurveyEntitlementUrl();
+        var searchspecsheetUrl = common.getSpecpdfFilterUrl($scope.searchspecsheettext);
+
+        angular.element(document).find('.norecords').append('<div class="pagerspinner"></div>');
+        $scope.clickedpage = page - 1;
+        var seismicSpecSheettaburl = 'getDetailInfo?module=Seismic&tabName=SpecSheet&size=20&pageNumber=' + $scope.clickedpage;
+        $scope.Specsheetitems = [];
+        $http.get(SurveyService.urlValue + seismicSpecSheettaburl + SurveyService.allSurveyFilter + SurveyService.surveyQueryBuilder + selectedSpecFields + uuid + surveyEntitlementUrl + geoSpatialFilter + searchspecsheetUrl).
+            then(function (response) {
+                console.log('specsheet items');
+                console.log(response.data);
+                if (response.data.content != null) {
+                    for (var i = 0; i < response.data.content.length; i++) {
+                        $scope.Specsheetitems.push({ fileName: response.data.content[i].parentValue, data: response.data.content[i].list });
+                    }
+
+                    if (response.data.totalElements < 10000) {
+                        $scope.SpecsheetPagesCount = response.data.totalElements;
+                    }
+                    else {
+                        $scope.SpecsheetPagesCount = 10000;
+                    }
+                }
+                else {
+                    $scope.Specsheetitems = [];
+                    $scope.SpecsheetPagesCount = response.data.totalElements;
+                }
+                setTimeout(function () {
+                    $rootScope.retainFields();
+                }, 1500);
+                angular.element(document.body).find('.pagerspinner').remove();
+            }).catch(function (response) {
+                angular.element(document.body).find('.pagerspinner').remove();
+                console.error('Error', response.status, response.data);
+            });
+    }
+    $scope.freeTextSpechSheet = function () {
+        if ($scope.searchspecsheettext !== "") {
+            $rootScope.seismicSpecSheettab();
+            $scope.searchspecsheettext = "";
+        } 
+    }
+}); 

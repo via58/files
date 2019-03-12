@@ -1,0 +1,8 @@
+  this.getSpecpdfFilterUrl = function (title) {
+
+        let selectedSearchTxt = "";
+        if (title !== "" && title !== undefined) {
+            selectedSearchTxt = "&pdfFilterStr=" + title;
+        }        
+        return selectedSearchTxt;
+    }

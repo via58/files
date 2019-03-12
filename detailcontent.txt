@@ -1,0 +1,252 @@
+<uib-tab index="10">
+                    <uib-tab-heading class="specshtab">Spec Sheets</uib-tab-heading>
+                    <div ng-controller="seismicSpecSheettabCtrl">
+                        <div class="col-md-12">
+                            <div class="col-md-5" style="padding:1%">
+                                <div class="col-md-8">
+                                    <input type="text" placeholder="Enter Search Text " class="form-control" ng-model="searchspecsheettext"
+                                        name="specSheet">
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" ng-disabled="searchspecsheettext !== '' ? false : true" class="btn btn-primary  btn-filter-active " ng-click="freeTextSpechSheet()">Search</button>
+                                </div>
+                                <!-- {{searchspecsheettext}} -->
+                            </div>
+
+                            <div class="well norecords" ng-show="Specsheetitems.length == 0" style="position: relative;height:60px;">No
+                                records found.</div>
+
+
+                            <div class="col-md-7">
+                                <div class="pull-right" ng-hide="Specsheetitems.length == 0">
+                                    <div style="float:left;font-size:15px;line-height:75px;margin-right:20px;"><span
+                                            style="font-weight:bold;">Total
+                                            Records : </span>{{Specsheetcount | number}}</div>
+                                    <div style="float:left;" paging page="currentPage" page-size="pageSize"
+                                        paging-action="Specsheetpager('Paging Clicked', page, pageSize, total)" total="SpecsheetPagesCount"
+                                        show-prev-next="true" show-first-last="true" text-next-class="glyphicon glyphicon-chevron-right"
+                                        text-prev-class="glyphicon glyphicon-chevron-left" text-first-class="glyphicon glyphicon-backward"
+                                        text-last-class="glyphicon glyphicon-forward">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="fldgrp-set well" ng-repeat="specsheetitem in Specsheetitems" style="clear:both;padding-top:0px;padding-bottom:0px;margin-bottom:10px;">
+                            <div class="row">
+                                <img src="img/icon_csv.png" ng-if="$root.disEntitlement !== 'Catalog User'" title="Download CSV"
+                                    alt="Excel data" class="deta-view-excel-dwn hide" onclick="confirm( ' The file you are downloading is very large (approx x GB) Do you want to continue?  ' )">
+                                <div class="col-md-6 detail-main-title">
+                                    File Name: {{specsheetitem.data.FileName[0]}}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 product-name-list">
+                                    <div class="col-md-4">
+                                        <label class="detail-sub-title-mandatory">Survey :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.SurveyName[0]}}</label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="detail-sub-title-mandatory">Survey Type :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.SurveyType[0]}}</label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="detail-sub-title-mandatory">Project :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.ProjectName[0]}}</label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="detail-sub-title-mandatory">Survey Acquisition Start Date :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.SurveyAcquisitionStartDate[0]
+                                            | stringToDate }}</label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="detail-sub-title-mandatory">Survey Acquisition End Date :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.SurveyAcquisitionEndDate[0]
+                                            | stringToDate }}</label>
+                                    </div>
+                                    <!-- -------------------------- -->
+                                    <div class="col-md-4 hide" data-column-val="Actual Survey Status">
+                                        <label class="detail-sub-title">Actual Survey Status :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.ActualSurveyStatus[0]}}</label>
+                                    </div>
+                                    <div class="col-md-4 hide" data-column-val="Bin Interval">
+                                        <label class="detail-sub-title">Bin Interval :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.BinInterval[0]}}</label>
+                                    </div>
+
+                                    <div class="col-md-4 hide" data-column-val="Bin Increment">
+                                        <label class="detail-sub-title">Bin Increment :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.BinIncrement[0]}}</label>
+                                    </div>
+                                    <div class="col-md-4 hide" data-column-val="Country">
+                                        <label class="detail-sub-title">Country :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.Country[0]}}</label>
+                                    </div>
+                                    <div class="col-md-4 hide" data-column-val="First Bin">
+                                        <label class="detail-sub-title">First Bin :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.FirstBin[0]}}</label>
+                                    </div>
+                                    <div class="col-md-4 hide" data-column-val="First Track">
+                                        <label class="detail-sub-title">First Track :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.FirstTrack[0]}}</label>
+                                    </div>
+                                    <div class="col-md-4 hide" data-column-val="Last Bin">
+                                        <label class="detail-sub-title">Last Bin :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.LastBin[0]}}</label>
+                                    </div>
+                                    <div class="col-md-4 hide" data-column-val="Last Track">
+                                        <label class="detail-sub-title">Last Track :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.LastTrack[0]}}</label>
+                                    </div>
+                                    <div class="col-md-4 hide" data-column-val="Navigation Name">
+                                        <label class="detail-sub-title">Navigation Name :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.NavigationName[0]}}</label>
+                                    </div>
+                                    <div class="col-md-4 hide" data-column-val="Number Of Lines">
+                                        <label class="detail-sub-title">Number Of Lines :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.NumOfLines[0] }}</label>
+                                    </div>
+                                    <div class="col-md-4 hide" data-column-val="Onshore">
+                                        <label class="detail-sub-title">Onshore :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.Onshore[0] =="0" ? '
+                                            OnShore':' OffShore' }}</label>
+                                    </div>
+                                    <div class="col-md-4 hide" data-column-val="Project Abbreviation">
+                                        <label class="detail-sub-title">Project Abbreviation :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.ProjectAbbrev[0] }}</label>
+                                    </div>
+                                    <div class="col-md-4 hide" data-column-val="Project Completion Date">
+                                        <label class="detail-sub-title">Project Completion Date :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.ProjectCompletionDate |
+                                            stringToDate }}</label>
+                                    </div>
+                                    <div class="col-md-4 hide" data-column-val="Project Group Name">
+                                        <label class="detail-sub-title">Project Group Name :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.ProjectGroupName[0]}}</label>
+                                    </div>
+
+                                    <div class="col-md-4 hide" data-column-val="Project Start Date">
+                                        <label class="detail-sub-title">Project Start Date :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.ProjectStartDate[0] |
+                                            stringToDate }}</label>
+                                    </div>
+
+                                    <div class="col-md-4 hide" data-column-val="Project SubType">
+                                        <label class="detail-sub-title">Project SubType :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.ProjectSubType[0]}}</label>
+                                    </div>
+                                    <div class="col-md-4 hide" data-column-val="Project Unit Measure">
+                                        <label class="detail-sub-title">Project Unit Measure :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.ProjectUnitOfMeasure[0]}}</label>
+                                    </div>
+
+                                    <div class="col-md-4 hide" data-column-val="Project Type">
+                                        <label class="detail-sub-title">Project Type :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.ProjectType[0]}}</label>
+                                    </div>
+
+                                    <div class="col-md-4 hide" data-column-val="Projection Code">
+                                        <label class="detail-sub-title">Projection Code :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.ProjectionCode[0]}}</label>
+                                    </div>
+
+                                    <div class="col-md-4 hide" data-column-val="Projection Name">
+                                        <label class="detail-sub-title">Projection Name :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.ProjectionName[0]}}</label>
+                                    </div>
+                                    <div class="col-md-4 hide" data-column-val="Projection Unit">
+                                        <label class="detail-sub-title">Projection Unit :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.ProjectionUnit[0]}}</label>
+                                    </div>
+
+                                    <div class="col-md-4 hide" data-column-val="Survey Status">
+                                        <label class="detail-sub-title">Survey Status :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.SurveyStatus[0]}}</label>
+                                    </div>
+
+                                    <div class="col-md-4 hide" data-column-val="TGS Office">
+                                        <label class="detail-sub-title">TGS Office :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.TGSOffice[0]}}</label>
+                                    </div>
+
+                                    <div class="col-md-4 hide" data-column-val="TGS Web Region">
+                                        <label class="detail-sub-title">TGS Web Region :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.SurveyTGSWebRegion[0]}}</label>
+                                    </div>
+                                    <div class="col-md-4 hide" data-column-val="Total Miles">
+                                        <label class="detail-sub-title">Total Miles :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.ProjectTotalMiles[0]}}</label>
+                                    </div>
+                                    <div class="col-md-4 hide" data-column-val="Track Increment">
+                                        <label class="detail-sub-title">Track Increment :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.TrackIncrement[0]}}</label>
+                                    </div>
+
+                                    <div class="col-md-4 hide" data-column-val="Track Interval">
+                                        <label class="detail-sub-title">Track Interval :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.TrackInterval[0]}}</label>
+                                    </div>
+
+                                    <div class="col-md-4 hide" data-column-val="Web Region">
+                                        <label class="detail-sub-title">Web Region :</label>
+                                        <label class="detail-sub-title">{{specsheetitem.data.ProjectTGSWebRegion[0]}}</label>
+                                    </div>
+
+                                    <!-- <div class="col-md-4 hide" data-column-val="Project Business Unit">
+                                            <label class="detail-sub-title">Project Business Unit :</label>
+                                            <label class="detail-sub-title">{{specsheetitem.ProjectBusinessUnit}}</label>
+                                        </div>    
+                                        <div class="col-md-4 hide" data-column-val="Project Status Code">
+                                            <label class="detail-sub-title">Project Status Code :</label>
+                                            <label class="detail-sub-title">{{specsheetitem.ProjectStatusCode}}</label>
+                                        </div>
+                                        <div class="col-md-4 hide" data-column-val="Project Comment">
+                                            <label class="detail-sub-title">Project Comment :</label>
+                                            <label class="detail-sub-title">{{specsheetitem.ProjectComment}}</label>
+                                        </div>
+                                        <div class="col-md-4 hide" data-column-val="Project InActive">
+                                            <label class="detail-sub-title">Project InActive :</label>
+                                            <label class="detail-sub-title">{{specsheetitem.InActive}}</label>
+                                        </div>
+                                        <div class="col-md-4 hide" data-column-val="Project Region">
+                                            <label class="detail-sub-title">Project Region :</label>
+                                            <label class="detail-sub-title">{{specsheetitem.Region}}</label>
+                                        </div>    
+                                        <div class="col-md-4 hide" data-column-val="Show On Map">
+                                            <label class="detail-sub-title">Show On Map :</label>
+                                            <label class="detail-sub-title">{{specsheetitem.ShowOnMap}}</label>
+                                        </div>
+                                        <div class="col-md-4 hide" data-column-val="Spechsheet URL">
+                                            <label class="detail-sub-title">Spechsheet URL :</label>
+                                            <label class="detail-sub-title">{{specsheetitem.SpecsheetURL}}</label>
+                                        </div>
+                                        <div class="col-md-4 hide" data-column-val="Area Name">
+                                            <label class="detail-sub-title">Area Name :</label>
+                                            <label class="detail-sub-title">{{specsheetitem.SurveyAreaName}}</label>
+                                        </div>
+                                        <div class="col-md-4 hide" data-column-val="Survey Attachments">
+                                            <label class="detail-sub-title">Survey Attachments :</label>
+                                            <label class="detail-sub-title">{{specsheetitem.SurveyAttachments}}</label>
+                                        </div>
+                                        <div class="col-md-4 hide" data-column-val="Survey Business Unit">
+                                            <label class="detail-sub-title">Survey Business Unit :</label>
+                                            <label class="detail-sub-title">{{specsheetitem.SurveyBusinessUnit}}</label>
+                                        </div>
+                                        <div class="col-md-4 hide" data-column-val="Survey Type">
+                                            <label class="detail-sub-title">Survey Type :</label>
+                                            <label class="detail-sub-title">{{specsheetitem.SurveyType}}</label>
+                                        </div>
+                                        
+                                        <div class="col-md-4 hide" data-column-val="Survey Size">
+                                            <label class="detail-sub-title">Survey Size :</label>
+                                            <label class="detail-sub-title">{{specsheetitem.SurveySize}}</label>
+                                        </div> -->
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <hr />
+                </uib-tab>
